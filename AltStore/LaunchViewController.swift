@@ -55,14 +55,14 @@ final class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDeleg
                     DispatchQueue.main.async {
                         switch result {
                         case .success():
-                            let dialogMessage = UIAlertController(title: "SideJITServer Detected", message: "Would you like to enable SideJITServer", preferredStyle: .alert)
+                            let dialogMessage = UIAlertController(title: "SideJITサーバー検出", message: "SideJITサーバーを有効にしますか？", preferredStyle: .alert)
                             
                             // Create OK button with action handler
                             let ok = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
                                 UserDefaults.standard.sidejitenable = true
                             })
                             
-                            let cancel = UIAlertAction(title: "Cancel", style: .cancel)
+                            let cancel = UIAlertAction(title: "キャンセル", style: .cancel)
                             //Add OK button to a dialog message
                             dialogMessage.addAction(ok)
                             dialogMessage.addAction(cancel)
@@ -70,7 +70,7 @@ final class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDeleg
                             // Present Alert to
                             self.present(dialogMessage, animated: true, completion: nil)
                         case .failure(_):
-                            print("Cannot find sideJITServer")
+                            print("SideJITサーバーが見つかりません。")
                         }
                     }
                 }
@@ -81,7 +81,7 @@ final class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDeleg
             DispatchQueue.global().async {
                 self.askfornetwork()
             }
-            print("SideJITServer Enabled")
+            print("SideJITサーバーが有効化されました。")
         }
         
         
@@ -90,7 +90,7 @@ final class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDeleg
         start_em_proxy(bind_addr: Consts.Proxy.serverURL)
         
         guard let pf = fetchPairingFile() else {
-            displayError("Device pairing file not found.")
+            displayError("ペアリングファイルが見つかりません。")
             return
         }
         start_minimuxer_threads(pf)
@@ -127,7 +127,7 @@ final class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDeleg
         let url = URL(string: SJSURL)!
         let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
             if let error = error {
-                print("No SideJITServer on Network")
+                print("SideJITサーバーからの応答がありません。")
                 completion(.failure(error))
                 return
             }
@@ -142,7 +142,7 @@ final class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDeleg
         let fm = FileManager.default
         let documentsPath = fm.documentsDirectory.appendingPathComponent("/\(filename)")
         if fm.fileExists(atPath: documentsPath.path), let contents = try? String(contentsOf: documentsPath), !contents.isEmpty {
-            print("Loaded ALTPairingFile from \(documentsPath.path)")
+            print("ペアリングファイルを \(documentsPath.path) から読み込みました。")
             return contents
         } else if
             let appResourcePath = Bundle.main.url(forResource: "ALTPairingFile", withExtension: "mobiledevicepairing"),
@@ -159,7 +159,7 @@ final class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDeleg
         } else {
             // Show an alert explaining the pairing file
             // Create new Alert
-            let dialogMessage = UIAlertController(title: "Pairing File", message: "Select the pairing file or select \"Help\" for help.", preferredStyle: .alert)
+            let dialogMessage = UIAlertController(title: "ペアリングファイル", message: "ペアリングファイルを選択するか、「ヘルプ」を押してください。", preferredStyle: .alert)
             
             // Create OK button with action handler
             let ok = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
@@ -175,7 +175,7 @@ final class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDeleg
              })
             
             //Add "help" button to take user to wiki
-            let wikiOption = UIAlertAction(title: "Help", style: .default) { (action) in
+            let wikiOption = UIAlertAction(title: "ヘルプ", style: .default) { (action) in
                 let wikiURL: String = "https://docs.sidestore.io/docs/getting-started/pairing-file"
                 if let url = URL(string: wikiURL) {
                     UIApplication.shared.open(url)
@@ -191,7 +191,7 @@ final class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDeleg
             // Present Alert to
             self.present(dialogMessage, animated: true, completion: nil)
 
-            let dialogMessage2 = UIAlertController(title: "Analytics", message: "This app contains anonymous analytics for research and project development. By continuing to use this app, you are consenting to this data collection", preferredStyle: .alert)
+            let dialogMessage2 = UIAlertController(title: "アナリティクス", message: "このアプリには、研究とプロジェクト開発のための匿名分析が含まれています。このアプリを使用し続けることで、このデータ収集に同意したことになります。", preferredStyle: .alert)
 
             let ok2 = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in})
             
@@ -205,7 +205,7 @@ final class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDeleg
     func displayError(_ msg: String) {
         print(msg)
         // Create a new alert
-        let dialogMessage = UIAlertController(title: "Error launching SideStore", message: msg, preferredStyle: .alert)
+        let dialogMessage = UIAlertController(title: "SideStoreの起動にエラーが発生しました。", message: msg, preferredStyle: .alert)
 
         // Present alert to user
         self.present(dialogMessage, animated: true, completion: nil)
@@ -220,7 +220,7 @@ final class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDeleg
             let data1 = try Data(contentsOf: urls[0])
             let pairing_string = String(bytes: data1, encoding: .utf8)
             if pairing_string == nil {
-                displayError("Unable to read pairing file")
+                displayError("ペアリングファイルの読み込みに失敗しました。")
             }
             
             // Save to a file for next launch
@@ -230,7 +230,7 @@ final class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDeleg
             // Start minimuxer now that we have a file
             start_minimuxer_threads(pairing_string!)
         } catch {
-            displayError("Unable to read pairing file")
+            displayError("ペアリングファイルの読み込みに失敗しました。")
         }
         
         if (isSecuredURL) {
@@ -240,7 +240,7 @@ final class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDeleg
     }
     
     func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
-        displayError("Choosing a pairing file was cancelled. Please re-open the app and try again.")
+        displayError("ペアリングファイルの選択がキャンセルされました。アプリを再起動してやり直してください。")
     }
     
     func start_minimuxer_threads(_ pairing_file: String) {
@@ -250,7 +250,7 @@ final class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDeleg
             try start(pairing_file, documentsDirectory)
         } catch {
             try! FileManager.default.removeItem(at: FileManager.default.documentsDirectory.appendingPathComponent("\(pairingFileName)"))
-            displayError("minimuxer failed to start, please restart SideStore. \((error as? LocalizedError)?.failureReason ?? "UNKNOWN ERROR!!!!!! REPORT TO GITHUB ISSUES!")")
+            displayError("minimuxerの起動に失敗しました。SideStoreを再起動してください。 \((error as? LocalizedError)?.failureReason ?? "UNKNOWN ERROR!!!!!! REPORT TO GITHUB ISSUES!")")
         }
         if #available(iOS 17, *) {
             // TODO: iOS 17 and above have a new JIT implementation that is completely broken in SideStore :(
