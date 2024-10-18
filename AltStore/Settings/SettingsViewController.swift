@@ -171,7 +171,7 @@ final class SettingsViewController: UITableViewController
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "anisetteServers" {
             let controller = UIHostingController(rootView: AnisetteServers(selected: UserDefaults.standard.menuAnisetteURL, errorCallback: {
-                ToastView(text: "Cleared adi.pb!", detailText: "You will need to log back into Apple ID in SideStore.").show(in: self)
+                ToastView(text: "adi.pbをクリアしました!", detailText: "SideStoreでApple IDに再度ログインする必要があります。").show(in: self)
             }))
             self.show(controller, sender: nil)
         } else {
@@ -221,48 +221,48 @@ private extension SettingsViewController
         case .signIn:
             if isHeader
             {
-                settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("ACCOUNT", comment: "")
+                settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("アカウント", comment: "")
             }
             else
             {
-                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Sign in with your Apple ID to download apps from SideStore.", comment: "")
+                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("SideStoreからアプリをダウンロードするには、Apple IDでサインインしてください。", comment: "")
             }
             
         case .patreon:
             if isHeader
             {
-                settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("SUPPORT US", comment: "")
+                settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("私たちをサポートしてください", comment: "")
             }
             else
             {
-                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Support the SideStore Team by following our socials or becoming a patron!", comment: "")
+                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("SideStoreチームをサポートするには、私たちのSNSをフォローしたり、支援者になってください!", comment: "")
             }
 
         case .account:
-            settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("ACCOUNT", comment: "")
+            settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("アカウント", comment: "")
             
-            settingsHeaderFooterView.button.setTitle(NSLocalizedString("SIGN OUT", comment: ""), for: .normal)
+            settingsHeaderFooterView.button.setTitle(NSLocalizedString("サインアウト", comment: ""), for: .normal)
             settingsHeaderFooterView.button.addTarget(self, action: #selector(SettingsViewController.signOut(_:)), for: .primaryActionTriggered)
             settingsHeaderFooterView.button.isHidden = false
             
         case .appRefresh:
             if isHeader
             {
-                settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("REFRESHING APPS", comment: "")
+                settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("アプリの更新", comment: "")
             }
             else
             {
-                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Enable Background Refresh to automatically refresh apps in the background when connected to Wi-Fi. \n\nDisable the Idle Timeout toggle to allow SideStore to not let your device go to sleep during a refresh or install of any apps.", comment: "")
+                settingsHeaderFooterView.secondaryLabel.text = NSLocalizedString("Wi-Fi接続時にアプリを自動的に更新するには「バックグラウンド更新」を有効にしてください。 \n\nまた、「アイドルタイムアウト」の切り替えを無効にすることで、アプリの更新やインストール中にSideStoreがデバイスのスリープを防ぐことができます。", comment: "")
             }
             
         case .instructions:
             break
             
         case .credits:
-            settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("CREDITS", comment: "")
+            settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("クレジット", comment: "")
             
         case .debug:
-            settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("DEBUG", comment: "")
+            settingsHeaderFooterView.primaryLabel.text = NSLocalizedString("デバッグ", comment: "")
         }
     }
     
@@ -320,8 +320,8 @@ private extension SettingsViewController
             }
         }
         
-        let alertController = UIAlertController(title: NSLocalizedString("Are you sure you want to sign out?", comment: ""), message: NSLocalizedString("You will no longer be able to install or refresh apps once you sign out.", comment: ""), preferredStyle: .actionSheet)
-        alertController.addAction(UIAlertAction(title: NSLocalizedString("Sign Out", comment: ""), style: .destructive) { _ in signOut() })
+        let alertController = UIAlertController(title: NSLocalizedString("サインアウトしてもよろしいですか？", comment: ""), message: NSLocalizedString("You will no longer be able to install or refresh apps once you sign out.", comment: ""), preferredStyle: .actionSheet)
+        alertController.addAction(UIAlertAction(title: NSLocalizedString("サインアウト", comment: ""), style: .destructive) { _ in signOut() })
         alertController.addAction(.cancel)
         //Fix crash on iPad
         alertController.popoverPresentationController?.barButtonItem = sender
@@ -357,13 +357,13 @@ private extension SettingsViewController
     
     func clearCache()
     {
-        let alertController = UIAlertController(title: NSLocalizedString("Are you sure you want to clear SideStore's cache?", comment: ""),
-                                                message: NSLocalizedString("This will remove all temporary files as well as backups for uninstalled apps.", comment: ""),
+        let alertController = UIAlertController(title: NSLocalizedString("SideStoreのキャッシュをクリアしてもよろしいですか？", comment: ""),
+                                                message: NSLocalizedString("これにより、すべての一時ファイルおよびアンインストールされたアプリのバックアップが削除されます。", comment: ""),
                                                 preferredStyle: .actionSheet)
         alertController.addAction(UIAlertAction(title: UIAlertAction.cancel.title, style: UIAlertAction.cancel.style) { [weak self] _ in
             self?.tableView.indexPathForSelectedRow.map { self?.tableView.deselectRow(at: $0, animated: true) }
         })
-        alertController.addAction(UIAlertAction(title: NSLocalizedString("Clear Cache", comment: ""), style: .destructive) { [weak self] _ in
+        alertController.addAction(UIAlertAction(title: NSLocalizedString("キャッシュをクリア", comment: ""), style: .destructive) { [weak self] _ in
             AppManager.shared.clearAppCache { result in
                 DispatchQueue.main.async {
                     self?.tableView.indexPathForSelectedRow.map { self?.tableView.deselectRow(at: $0, animated: true) }
@@ -372,7 +372,7 @@ private extension SettingsViewController
                     {
                     case .success: break
                     case .failure(let error):
-                        let alertController = UIAlertController(title: NSLocalizedString("Unable to Clear Cache", comment: ""), message: error.localizedDescription, preferredStyle: .alert)
+                        let alertController = UIAlertController(title: NSLocalizedString("キャッシュのクリアに失敗しました。", comment: ""), message: error.localizedDescription, preferredStyle: .alert)
                         alertController.addAction(.ok)
                         self?.present(alertController, animated: true)
                     }
@@ -605,7 +605,7 @@ extension SettingsViewController
             switch row
             {
             case .sendFeedback:
-                let alertController = UIAlertController(title: "Send Feedback", message: "Choose a method to send feedback:", preferredStyle: .actionSheet)
+                let alertController = UIAlertController(title: "フィードバックを送信", message: "フィードバックを送信する方法を選択してください", preferredStyle: .actionSheet)
                 
                 // Option 1: GitHub
                 alertController.addAction(UIAlertAction(title: "GitHub", style: .default) { _ in
@@ -640,13 +640,13 @@ extension SettingsViewController
 //
 //                       self.present(mailViewController, animated: true, completion: nil)
 //                  } else {
-//                      let toastView = ToastView(text: NSLocalizedString("Cannot Send Mail", comment: ""), detailText: nil)
+//                      let toastView = ToastView(text: NSLocalizedString("メールを送信できません", comment: ""), detailText: nil)
 //                      toastView.show(in: self)
 //                }
 //            })
                 
                 // Cancel action
-                alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+                alertController.addAction(UIAlertAction(title: "キャンセル", style: .cancel, handler: nil))
                 
                 // For iPad: Set the source view if presenting on iPad to avoid crashes
                 if let popoverController = alertController.popoverPresentationController {
@@ -662,30 +662,30 @@ extension SettingsViewController
                 
                    let alertController = UIAlertController(
                       title: NSLocalizedString("SideJITServer", comment: ""),
-                      message: NSLocalizedString("Settings for SideJITServer", comment: ""),
+                      message: NSLocalizedString("SideJITServerの設定", comment: ""),
                       preferredStyle: UIAlertController.Style.actionSheet)
                     
                     
                     if UserDefaults.standard.sidejitenable {
-                        alertController.addAction(UIAlertAction(title: NSLocalizedString("Disable", comment: ""), style: .default){ _ in
+                        alertController.addAction(UIAlertAction(title: NSLocalizedString("無効にする", comment: ""), style: .default){ _ in
                             UserDefaults.standard.sidejitenable = false
                         })
                     } else {
-                        alertController.addAction(UIAlertAction(title: NSLocalizedString("Enable", comment: ""), style: .default){ _ in
+                        alertController.addAction(UIAlertAction(title: NSLocalizedString("有効にする", comment: ""), style: .default){ _ in
                             UserDefaults.standard.sidejitenable = true
                         })
                     }
                     
-                    alertController.addAction(UIAlertAction(title: NSLocalizedString("Server Address", comment: ""), style: .default){ _ in
-                        let alertController1 = UIAlertController(title: "SideJITServer Address", message: "Please Enter the SideJITServer Address Below. (this is not needed if SideJITServer has already been detected)", preferredStyle: .alert)
+                    alertController.addAction(UIAlertAction(title: NSLocalizedString("サーバーアドレス", comment: ""), style: .default){ _ in
+                        let alertController1 = UIAlertController(title: "SideJITServerアドレス", message: "下にSideJITServerのアドレスを入力してください。(SideJITServerがすでに検出されている場合は不要です。)", preferredStyle: .alert)
                         
 
                         alertController1.addTextField { textField in
-                            textField.placeholder = "SideJITServer Address"
+                            textField.placeholder = "SideJITServerアドレス"
                         }
                         
                         
-                        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+                        let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel, handler: nil)
                         alertController1.addAction(cancelAction)
                         
 
@@ -702,7 +702,7 @@ extension SettingsViewController
                     })
                     
 
-                   alertController.addAction(UIAlertAction(title: NSLocalizedString("Refresh", comment: ""), style: .destructive){ _ in
+                   alertController.addAction(UIAlertAction(title: NSLocalizedString("更新", comment: ""), style: .destructive){ _ in
                       if UserDefaults.standard.sidejitenable {
                          var SJSURL = ""
                           if (UserDefaults.standard.textInputSideJITServerurl ?? "").isEmpty {
@@ -727,7 +727,7 @@ extension SettingsViewController
                    })
                     
 
-                   let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+                   let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel, handler: nil)
                    alertController.addAction(cancelAction)
                    //Fix crash on iPad
                    alertController.popoverPresentationController?.sourceView = self.tableView
@@ -736,8 +736,8 @@ extension SettingsViewController
                    self.tableView.deselectRow(at: indexPath, animated: true)
                 } else {
                    let alertController = UIAlertController(
-                      title: NSLocalizedString("You are not on iOS 17+ This will not work", comment: ""),
-                      message: NSLocalizedString("This is meant for 'SideJITServer' and it only works on iOS 17+ ", comment: ""),
+                      title: NSLocalizedString("あなたのデバイスはiOS 17以降ではないため、動作しません", comment: ""),
+                      message: NSLocalizedString("これは「SideJITServer」のためのもので、iOS 17以降でのみ動作します。", comment: ""),
                       preferredStyle: UIAlertController.Style.actionSheet)
 
                    alertController.addAction(.cancel)
@@ -759,18 +759,18 @@ extension SettingsViewController
                 
                 let documentsPath = fm.documentsDirectory.appendingPathComponent("/\(filename)")
                 let alertController = UIAlertController(
-                    title: NSLocalizedString("Are you sure to reset the pairing file?", comment: ""),
-                    message: NSLocalizedString("You can reset the pairing file when you cannot sideload apps or enable JIT. You need to restart SideStore.", comment: ""),
+                    title: NSLocalizedString("ペアリングファイルをリセットしてもよろしいですか？", comment: ""),
+                    message: NSLocalizedString("アプリをサイドロードしたり、JITを有効にできない場合は、ペアリングファイルをリセットできます。SideStoreを再起動する必要があります。", comment: ""),
                     preferredStyle: UIAlertController.Style.actionSheet)
                 
-                alertController.addAction(UIAlertAction(title: NSLocalizedString("Delete and Reset", comment: ""), style: .destructive){ _ in
+                alertController.addAction(UIAlertAction(title: NSLocalizedString("削除してリセット", comment: ""), style: .destructive){ _ in
                     if fm.fileExists(atPath: documentsPath.path), let contents = try? String(contentsOf: documentsPath), !contents.isEmpty {
                         UserDefaults.standard.isPairingReset = true
                         try? fm.removeItem(atPath: documentsPath.path)
-                        NSLog("Pairing File Reseted")
+                        NSLog("ペアリングファイルがリセットされました。")
                     }
                     self.tableView.deselectRow(at: indexPath, animated: true)
-                    let dialogMessage = UIAlertController(title: NSLocalizedString("Pairing File Reset", comment: ""), message: NSLocalizedString("Please restart SideStore", comment: ""), preferredStyle: .alert)
+                    let dialogMessage = UIAlertController(title: NSLocalizedString("ペアリングファイルがリセットされました。", comment: ""), message: NSLocalizedString("SideStoreを再起動してください。", comment: ""), preferredStyle: .alert)
                     self.present(dialogMessage, animated: true, completion: nil)
                 })
                 alertController.addAction(.cancel)
@@ -782,7 +782,7 @@ extension SettingsViewController
                 
             case .anisetteServers:
                 self.prepare(for: UIStoryboardSegue(identifier: "anisetteServers", source: self, destination: UIHostingController(rootView: AnisetteServers(selected: "", errorCallback: {
-                    ToastView(text: "Reset adi.pb", detailText: "Buh").show(in: self)
+                    ToastView(text: "adi.pbをリセット", detailText: "Buh").show(in: self)
                 }))), sender: nil)
 //                self.performSegue(withIdentifier: "anisetteServers", sender: nil)
             case .advancedSettings:
