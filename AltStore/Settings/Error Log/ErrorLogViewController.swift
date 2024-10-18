@@ -75,7 +75,7 @@ private extension ErrorLogViewController
             
             let cell = cell as! ErrorLogTableViewCell
             cell.dateLabel.text = self.timeFormatter.string(from: loggedError.date)
-            cell.errorFailureLabel.text = loggedError.localizedFailure ?? NSLocalizedString("Operation Failed", comment: "")
+            cell.errorFailureLabel.text = loggedError.localizedFailure ?? NSLocalizedString("操作に失敗しました。", comment: "")
             cell.errorCodeLabel.text = loggedError.error.localizedErrorCode
 
             let nsError = loggedError.error as NSError
@@ -95,16 +95,16 @@ private extension ErrorLogViewController
             if #available(iOS 14, *)
             {
                 let menu = UIMenu(title: "", children: [
-                    UIAction(title: NSLocalizedString("Copy Error Message", comment: ""), image: UIImage(systemName: "doc.on.doc")) { [weak self] _ in
+                    UIAction(title: NSLocalizedString("エラーメッセージをコピー", comment: ""), image: UIImage(systemName: "doc.on.doc")) { [weak self] _ in
                         self?.copyErrorMessage(for: loggedError)
                     },
-                    UIAction(title: NSLocalizedString("Copy Error Code", comment: ""), image: UIImage(systemName: "doc.on.doc")) { [weak self] _ in
+                    UIAction(title: NSLocalizedString("エラーコードをコピー", comment: ""), image: UIImage(systemName: "doc.on.doc")) { [weak self] _ in
                         self?.copyErrorCode(for: loggedError)
                     },
-                    UIAction(title: NSLocalizedString("Search FAQ", comment: ""), image: UIImage(systemName: "magnifyingglass")) { [weak self] _ in
+                    UIAction(title: NSLocalizedString("FAQを検索", comment: ""), image: UIImage(systemName: "magnifyingglass")) { [weak self] _ in
                         self?.searchFAQ(for: loggedError)
                     },
-                    UIAction(title: NSLocalizedString("View More Details", comment: ""), image: UIImage(systemName: "ellipsis.circle")) { [weak self] _ in
+                    UIAction(title: NSLocalizedString("詳細", comment: ""), image: UIImage(systemName: "ellipsis.circle")) { [weak self] _ in
 
                     }
                 ])
@@ -164,8 +164,8 @@ private extension ErrorLogViewController
         }
         
         let placeholderView = RSTPlaceholderView()
-        placeholderView.textLabel.text = NSLocalizedString("No Errors", comment: "")
-        placeholderView.detailTextLabel.text = NSLocalizedString("Errors that occur when sideloading or refreshing apps will appear here.", comment: "")
+        placeholderView.textLabel.text = NSLocalizedString("エラーはありません", comment: "")
+        placeholderView.detailTextLabel.text = NSLocalizedString("サイドロードやアプリのリフレッシュ中に発生したエラーはここに表示されます。", comment: "")
         dataSource.placeholderView = placeholderView
         
         return dataSource
@@ -206,10 +206,10 @@ private extension ErrorLogViewController
     
     @IBAction func clearLoggedErrors(_ sender: UIBarButtonItem)
     {
-        let alertController = UIAlertController(title: NSLocalizedString("Are you sure you want to clear the error log?", comment: ""), message: nil, preferredStyle: .actionSheet)
+        let alertController = UIAlertController(title: NSLocalizedString("エラーログをクリアしてもよろしいですか？", comment: ""), message: nil, preferredStyle: .actionSheet)
         alertController.popoverPresentationController?.barButtonItem = sender
         alertController.addAction(.cancel)
-        alertController.addAction(UIAlertAction(title: NSLocalizedString("Clear Error Log", comment: ""), style: .destructive) { _ in
+        alertController.addAction(UIAlertAction(title: NSLocalizedString("エラーログをクリア", comment: ""), style: .destructive) { _ in
             self.clearLoggedErrors()
         })
         self.present(alertController, animated: true)
@@ -225,7 +225,7 @@ private extension ErrorLogViewController
             catch
             {
                 DispatchQueue.main.async {
-                    let alertController = UIAlertController(title: NSLocalizedString("Failed to Clear Error Log", comment: ""), message: error.localizedDescription, preferredStyle: .alert)
+                    let alertController = UIAlertController(title: NSLocalizedString("エラーログのクリアに失敗しました。", comment: ""), message: error.localizedDescription, preferredStyle: .alert)
                     alertController.addAction(.ok)
                     self.present(alertController, animated: true)
                 }
@@ -276,15 +276,15 @@ extension ErrorLogViewController
         alertController.addAction(UIAlertAction(title: UIAlertAction.cancel.title, style: UIAlertAction.cancel.style) { _ in
             tableView.deselectRow(at: indexPath, animated: true)
         })
-        alertController.addAction(UIAlertAction(title: NSLocalizedString("Copy Error Message", comment: ""), style: .default) { [weak self] _ in
+        alertController.addAction(UIAlertAction(title: NSLocalizedString("エラーメッセージをコピー", comment: ""), style: .default) { [weak self] _ in
             self?.copyErrorMessage(for: loggedError)
             tableView.deselectRow(at: indexPath, animated: true)
         })
-        alertController.addAction(UIAlertAction(title: NSLocalizedString("Copy Error Code", comment: ""), style: .default) { [weak self] _ in
+        alertController.addAction(UIAlertAction(title: NSLocalizedString("エラーコードをコピー", comment: ""), style: .default) { [weak self] _ in
             self?.copyErrorCode(for: loggedError)
             tableView.deselectRow(at: indexPath, animated: true)
         })
-        alertController.addAction(UIAlertAction(title: NSLocalizedString("Search FAQ", comment: ""), style: .default) { [weak self] _ in
+        alertController.addAction(UIAlertAction(title: NSLocalizedString("FAQを検索", comment: ""), style: .default) { [weak self] _ in
             self?.searchFAQ(for: loggedError)
             tableView.deselectRow(at: indexPath, animated: true)
         })
@@ -293,7 +293,7 @@ extension ErrorLogViewController
     
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
     {
-        let deleteAction = UIContextualAction(style: .destructive, title: NSLocalizedString("Delete", comment: "")) { _, _, completion in
+        let deleteAction = UIContextualAction(style: .destructive, title: NSLocalizedString("削除", comment: "")) { _, _, completion in
             let loggedError = self.dataSource.item(at: indexPath)
             DatabaseManager.shared.persistentContainer.performBackgroundTask { context in
                 do
@@ -306,7 +306,7 @@ extension ErrorLogViewController
                 }
                 catch
                 {
-                    print("[ALTLog] Failed to delete LoggedError \(loggedError.objectID):", error)
+                    print("[ALTLog] エラーログの削除に失敗しました。 \(loggedError.objectID):", error)
                     completion(false)
                 }
             }
@@ -324,7 +324,7 @@ extension ErrorLogViewController
         
         if Calendar.current.isDateInToday(loggedError.date)
         {
-            return NSLocalizedString("Today", comment: "")
+            return NSLocalizedString("今日", comment: "")
         }
         else
         {
