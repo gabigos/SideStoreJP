@@ -30,7 +30,7 @@ class ErrorDetailsViewController: UIViewController
         }
         else
         {
-            self.title = NSLocalizedString("Error Details", comment: "")
+            self.title = NSLocalizedString("エラーメッセージの詳細", comment: "")
         }
 
         self.navigationController?.navigationBar.tintColor = .altPrimary
