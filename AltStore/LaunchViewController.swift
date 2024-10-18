@@ -55,7 +55,7 @@ final class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDeleg
                     DispatchQueue.main.async {
                         switch result {
                         case .success():
-                            let dialogMessage = UIAlertController(title: "SideJITサーバー検出", message: "SideJITサーバーを有効にしますか？", preferredStyle: .alert)
+                            let dialogMessage = UIAlertController(title: "SideJITServer検出", message: "SideJITServerを有効にしますか？", preferredStyle: .alert)
                             
                             // Create OK button with action handler
                             let ok = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
@@ -70,7 +70,7 @@ final class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDeleg
                             // Present Alert to
                             self.present(dialogMessage, animated: true, completion: nil)
                         case .failure(_):
-                            print("SideJITサーバーが見つかりません。")
+                            print("SideJITServerが見つかりません。")
                         }
                     }
                 }
@@ -81,7 +81,7 @@ final class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDeleg
             DispatchQueue.global().async {
                 self.askfornetwork()
             }
-            print("SideJITサーバーが有効化されました。")
+            print("SideJITServerが有効化されました。")
         }
         
         
@@ -127,7 +127,7 @@ final class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDeleg
         let url = URL(string: SJSURL)!
         let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
             if let error = error {
-                print("SideJITサーバーからの応答がありません。")
+                print("SideJITServerからの応答がありません。")
                 completion(.failure(error))
                 return
             }
@@ -151,10 +151,10 @@ final class LaunchViewController: RSTLaunchViewController, UIDocumentPickerDeleg
             let contents = String(data: data, encoding: .utf8),
             !contents.isEmpty,
             !UserDefaults.standard.isPairingReset {
-            print("Loaded ALTPairingFile from \(appResourcePath.path)")
+            print("ペアリングファイルを \(appResourcePath.path) から読み込みました。")
             return contents
         } else if let plistString = Bundle.main.object(forInfoDictionaryKey: "ALTPairingFile") as? String, !plistString.isEmpty, !plistString.contains("insert pairing file here"), !UserDefaults.standard.isPairingReset{
-            print("Loaded ALTPairingFile from Info.plist")
+            print("Info.plistからALTPairingFileを読み込みました。")
             return plistString
         } else {
             // Show an alert explaining the pairing file
@@ -271,7 +271,7 @@ extension LaunchViewController
         }
         catch let error as NSError
         {
-            let title = error.userInfo[NSLocalizedFailureErrorKey] as? String ?? NSLocalizedString("Unable to Launch SideStore", comment: "")
+            let title = error.userInfo[NSLocalizedFailureErrorKey] as? String ?? NSLocalizedString("SideStoreを起動できません", comment: "")
             
             let errorDescription: String
             
@@ -286,7 +286,7 @@ extension LaunchViewController
             }
             
             let alertController = UIAlertController(title: title, message: errorDescription, preferredStyle: .alert)
-            alertController.addAction(UIAlertAction(title: NSLocalizedString("Retry", comment: ""), style: .default, handler: { (action) in
+            alertController.addAction(UIAlertAction(title: NSLocalizedString("再試行", comment: ""), style: .default, handler: { (action) in
                 self.handleLaunchConditions()
             }))
             self.present(alertController, animated: true, completion: nil)
