@@ -320,9 +320,9 @@ private extension SettingsViewController
             }
         }
         
-        let alertController = UIAlertController(title: NSLocalizedString("サインアウトしてもよろしいですか？", comment: ""), message: NSLocalizedString("You will no longer be able to install or refresh apps once you sign out.", comment: ""), preferredStyle: .actionSheet)
+        let alertController = UIAlertController(title: NSLocalizedString("サインアウトしてもよろしいですか？", comment: ""), message: NSLocalizedString("サインアウトすると、アプリのインストールや更新ができなくなります。", comment: ""), preferredStyle: .actionSheet)
         alertController.addAction(UIAlertAction(title: NSLocalizedString("サインアウト", comment: ""), style: .destructive) { _ in signOut() })
-        alertController.addAction(.cancel)
+        alertController.addAction(UIAlertAction(title: "キャンセル", style: .cancel, handler: nil))
         //Fix crash on iPad
         alertController.popoverPresentationController?.barButtonItem = sender
         self.present(alertController, animated: true, completion: nil)
@@ -667,11 +667,11 @@ extension SettingsViewController
                     
                     
                     if UserDefaults.standard.sidejitenable {
-                        alertController.addAction(UIAlertAction(title: NSLocalizedString("無効にする", comment: ""), style: .default){ _ in
+                        alertController.addAction(UIAlertAction(title: NSLocalizedString("無効", comment: ""), style: .default){ _ in
                             UserDefaults.standard.sidejitenable = false
                         })
                     } else {
-                        alertController.addAction(UIAlertAction(title: NSLocalizedString("有効にする", comment: ""), style: .default){ _ in
+                        alertController.addAction(UIAlertAction(title: NSLocalizedString("有効", comment: ""), style: .default){ _ in
                             UserDefaults.standard.sidejitenable = true
                         })
                     }
