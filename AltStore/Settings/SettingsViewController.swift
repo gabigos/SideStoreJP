@@ -360,7 +360,7 @@ private extension SettingsViewController
         let alertController = UIAlertController(title: NSLocalizedString("SideStoreのキャッシュをクリアしてもよろしいですか？", comment: ""),
                                                 message: NSLocalizedString("これにより、すべての一時ファイルおよびアンインストールされたアプリのバックアップが削除されます。", comment: ""),
                                                 preferredStyle: .actionSheet)
-        alertController.addAction(UIAlertAction(title: UIAlertAction.cancel.title, style: UIAlertAction.cancel.style) { [weak self] _ in
+        alertController.addAction(UIAlertAction(title: "キャンセル", style: .cancel, handler: nil)) { [weak self] _ in
             self?.tableView.indexPathForSelectedRow.map { self?.tableView.deselectRow(at: $0, animated: true) }
         })
         alertController.addAction(UIAlertAction(title: NSLocalizedString("キャッシュをクリア", comment: ""), style: .destructive) { [weak self] _ in
@@ -773,7 +773,7 @@ extension SettingsViewController
                     let dialogMessage = UIAlertController(title: NSLocalizedString("ペアリングファイルがリセットされました。", comment: ""), message: NSLocalizedString("SideStoreを再起動してください。", comment: ""), preferredStyle: .alert)
                     self.present(dialogMessage, animated: true, completion: nil)
                 })
-                alertController.addAction(.cancel)
+                alertController.addAction(UIAlertAction(title: "キャンセル", style: .cancel, handler: nil))
                 //Fix crash on iPad
                 alertController.popoverPresentationController?.sourceView = self.tableView
                 alertController.popoverPresentationController?.sourceRect = self.tableView.rectForRow(at: indexPath)
